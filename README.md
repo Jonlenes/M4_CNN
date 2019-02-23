@@ -1,40 +1,22 @@
-# Predizer a raça de um cachorro
+# Predict the dog breed
 
-## Introdução
+For more information, read Report.pdf (in Portuguese) or contact me.
 
-O método de classificação será utilizado na identificação da raça de um cachorro, onde cada imagem do dataset será classificada baseada em suas características. Para tanto serão explorados diversos modelos para classificação utilizando Deep Learning.
-
-Composto por 19742 imagens, o dataset utilizado neste trabalho, esta dividido em três conjuntos: treinamento com 8300, validação com 6022 e testes com 5420.
-
-## Atividades
-Com o intuito de identificar a raça de um cachorro, foram realizadas e apresentadas as seguintes atividades:
-
-* Construção de uma Convolutional Neural Network (CNN) básica para realizar a classificação;
-* Feature extration com CNN;
+## Activities
+* Build a Convolutional Neural Network (CNN) from scratch.
+* Feature extration with CNN;
 * Transfer Learning
 * Data augmentation
 * Meta Learning
 
-## Construção de uma CNN básica
-
-
-A construção e o treinamento da CNN, foram auxiliadas pela biblioteca Keras (The Python Deep Learning library), por ser esta uma API de alto nível para redes neurais.
-
-A CNN criada para a classificação das raças de cachorros é composta por uma imagem de entrada com tamanho 224 x 224 pixels, 2 camadas de tipos distintos que se repetem, sendo uma de convolution e a outra de max pooling, seguida por uma camada de global average pooling e uma camada fully-connected que gera o output. A representação da arquitetura desta CNN pode ser visualizada na figura abaixo.
+## Build a CNN from scratch
 
 <p align="center">
   <img src="imgs/layers.png">
 </p>
 
-A camada de convolution utiliza um kernel de tamanho 3, strides com tamanho 1 para altura e largura, e função de ativação ReLU. Inicialmente com 16 filtros de saída (depth), que serão enviados para a próxima camada acrescido com vetores de bias. Em seguida, o modelo utiliza a camada max pooling com pool size e stride ambos iguais a 2. Ressalta-se que estas camadas são repetidas 4 vezes, sendo alterado o depth em cada convolution.
+Result: 27.13% of accuracy.
 
-Quanto a camada fully-connected, a função de ativação softmax é utilizada para produz, a partir de um volume de entrada, um vetor N dimensional, onde N é o número de classes.
- 
-As imagens de entrada foram redimensionadas e repassada para o modelo, que obteve uma accuracy de  12.26% , após o treinamento por 5 epochs e 10 exemplos por passe (batch size). Treinando o mesmo modelo por 10 epochs e 20 batchs obteve-se uma accuracy de  17.87% .
-
-Ainda neste modelo, adicionou-se uma camada de normalização (Batch Normalization) após cada camada de pooling, o resultado apresentou melhoria com  27.13%  de  accuracy.
-
-O próximo passo realizado visando melhorar o processo de classificação foi a utilização de modelos prontos e pré-treinados com outro dataset para a extração features e a realização de transfer learning, conforme apresentado a seguir.
 
 ## Modelos pré-treinados
 
