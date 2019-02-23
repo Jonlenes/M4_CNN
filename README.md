@@ -17,21 +17,9 @@ For more information, read Report.pdf (in Portuguese) or contact me.
 
 Result: 27.13% of accuracy.
 
+## Features extraction with CNN
 
-## Modelos pré-treinados
-
-Nesse trabalho foram exploradas a utilização de modelos de deep learning pré-treinados para a extração de features e transfer learning.
-
-### Features extraction com CNN
-
-O primeiro modelo utilizado foi o ResNet50 pré-treinado com o dataset ImageNet.
-
-O ResNet50, também disponibilizado na Keras, foi carregado e utilizado para realizar o features extraction. Para isso foi necessário remover sua camada fully-connected e os 2048 valores que eram repassados para esta camada foram utilizados como features.
-
-Após a extração de features para cada imagem, foi realizado o scaling desses dados e os mesmos foram treinados com os classificadores listados na tabela abaixo, com as respectivas accuracy normalizada.
-
-
-| Classificador       |   Accuracy    | 
+| Classifier       |   Accuracy    | 
 | --------------| -----------------| 
 | Nearest Neighbors   |   61.50%     |
 | Linear SVM          |   76.53%     |
@@ -42,61 +30,34 @@ Após a extração de features para cada imagem, foi realizado o scaling desses 
 | Naive Bayes         |   69.86%     |
 | Logistic Regression |   78.82%     | 
 
-
-Como pode ser observado, a utilização de modelos pré-treinados pode auxiliar no processo de classificação, pois foi obtido 81.61% de accuracy sobre o conjunto de validação. No próximo passo será utilizada a técnica de transfer learning na busca por melhores resultados.
-
 ### Transfer Learning
 
-O transfer learning é uma técnica de aprendizado de máquina em que um modelo treinado em uma tarefa é redirecionado outra tarefa relacionada.
+**Experiment 1 - Fine-tuning**
 
-Uma das maneiras para realizar transfer learning é por meio do fine-tuning, que consiste no processo de ajustar as redes existentes, treinadas em outro dataset, e continuar o treinamento com dataset desejado.
-
-Neste trabalho foram utilizados os modelos ResNet50, InceptionV3 (IncV3) e Xception (Xcp) pré-treinados com o dataset ImageNet. Para todos os modelos, o processo de fine-tuning realizado foi similar, consistindo na remoção da última camada do modelo original e na adição de novas camadas para realizar o treinamento com o dataset deste trabalho.
-
-Para determinar as novas camadas a ser adicionadas ao modelo, foram realizados alguns experimentos, sendo estes apresentados em seguida.
-
-**Experimento 1 - Fine-tuning**
-
-Este experimento consiste em receber o output da última camada do modelo pré-treinado (sem o topo), adicionar uma camada de glabal average pooling, uma camada  fully-connected com 512 saídas e ativação ReLU e, por fim, uma camada de output com 83 saídas e função de ativação softmax.
-
-Ao final deste processo, todas as camadas do modelo pré-treinado foram congeladas e as novas camadas adicionadas foram treinadas por uma epoch. Em seguida, descongela-se 10% das últimas camadas e realiza-se novo treinamento por mais 75 epochs, obtendo-se os resultados apresentados na tabela abaixo.
-
-| Modelos     | Epochs    |   Accuracy val    | 
+| Models     | Epochs    |   Accuracy val    | 
 | -----------| ----------| --------------| 
 | ResNet50    | 75        |   81.45%      | 
 | InceptionV3 | 75        |   83.88%     |
 | Xception    | 75        |   84.18%     |
 
-Os resultados obtidos com este experimento foi superior aos encontrados utilizando a CNN para a extração de features, chegando a 84.18%.
+**Experiment 2 - Fine-tuning 2**
 
-**Experimento 2 - Fine-tuning 2**
-
-Neste experimento utiliza-se a mesma configuração do Experimento 1, mas remove-se todas as camadas existentes entre a camada de pooling e a de output, ou seja, foi adicionada somente uma camada após a output do modelo pré-treinado. O resultado deste experimento pode ser visualizados na tabela abaixo.
-
-| Modelos      | Epochs   |   Accuracy val    | 
+| Models      | Epochs   |   Accuracy val    | 
 | -----------| ----------| --------------| 
 | ResNet50     | 3        |   79.49%      | 
 | InceptionV3  | 3        |   83.81%     |
 | Xception     | 3        |   84.24%     |
 
-Os resultados encontrados com este experimento foram equivalentes aos do experimento anterior. Como o modelo deste experimento é mais simples, então optou-se por continuar os testes com este.
+**Experiment 3 - Freezing rate**
 
-**Experimento 3 - Taxa de congelamento**
-
-Este experimento visa identificar a melhor taxa de congelamento das camadas pré-treinadas da rede, utilizando o modelo do Experimento 2. Neste intuito, foram considerados alguns percentuais de congelamento - o percentual congela as primeiras X% camadas da rede - conforme apresentado na tabela abaixo.
-
-| Percentual | Epochs | ResNet50 | IncV3       | Xcep       | 
+| Percentage | Epochs | ResNet50 | IncV3       | Xcep       | 
 | -----------| ----------| --------------| --------| ------| 
 | 90%       | 3      | 79.49%  | 83.81%     | 84.24% |
 | 75%       | 3      | 78.49%  | 82.46%     | 84.02% |
 | 50%       | 3      | 79.23%  | 82.35%     | 83.41% |
 | 25%       | 3      | 79.18%  | 81.47%     | 82.93% | 
 
-Novamente os resultados foram bem similares aos anteriores, no entanto, quanto maior a quantidade de camadas descongeladas, maior é a necessidade de poder computacional para realizar o treinamento, logo optou-se por descongelar uma quantidade pequena de camada. Outra observação importante, foi o aumento da accuracy sobre o próprio conjunto de treinamento e uma diminuição da accuracy sobre o conjunto de validação, o que caracteriza um possível overfitting, então o próximo experimento visa explorar a utilização de camadas de dropout juntamente com diferentes taxas de congelamento.
-
-
-
-**Experimento 4 - Dropout**
+**Experiment 4 - Dropout**
 
 Nesse experimento foram adicionadas camadas de dropout após camadas dense. Na tabela abaixo são mostrados os resultados considerando diferentes epocs e camadas de dropout. Nesta tabela 0.75 significa uma camada de dropout de 0.50 seguida por uma dense e outro dropout de 0.25. A coluna Perc representa o percentual de congelamento, conforme Experimento 3.
 
